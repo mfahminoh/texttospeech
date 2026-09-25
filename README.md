@@ -7,6 +7,8 @@ Contoh ringkas untuk menukar teks kepada suara menggunakan Gemini API.
 1. Dapatkan API key di [Google AI Studio](https://aistudio.google.com/apikey).
 2. Pasang pakej:
    ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate      # Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
 3. Tetapkan API key:
@@ -15,16 +17,16 @@ Contoh ringkas untuk menukar teks kepada suara menggunakan Gemini API.
    ```
 4. Jalankan dari command line:
    ```bash
-   python tts.py "Selamat pagi, apa khabar semua?" -o salam.wav -v Kore
+   python3 tts.py "Selamat pagi, apa khabar semua?" -o salam.wav -v Kore
    ```
 
 ## Aplikasi web
 
 ```bash
-python app.py
+python3 app.py
 ```
 
-Buka http://127.0.0.1:5000 — taip teks, pilih suara, tekan **Jana Suara**,
+Buka http://127.0.0.1:8000 — taip teks, pilih suara, tekan **Jana Suara**,
 kemudian dengar atau muat turun fail WAV.
 
 ## Tetapan

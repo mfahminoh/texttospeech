@@ -3,7 +3,7 @@
 Guna:
     export GEMINI_API_KEY="kunci-api-anda"
     python app.py
-Kemudian buka http://127.0.0.1:5000
+Kemudian buka http://127.0.0.1:8000
 """
 
 import os
@@ -56,4 +56,5 @@ def api_tts():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Port 5000 digunakan oleh AirPlay di macOS, jadi guna 8000
+    app.run(debug=True, port=int(os.environ.get("PORT", 8000)))
