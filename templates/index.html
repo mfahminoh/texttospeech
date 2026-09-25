@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gemini Text-to-Speech</title>
+  <style>
+    :root { --bg: #f6f7f9; --card: #fff; --text: #1d2330; --muted: #667085; --accent: #1a73e8; --border: #d0d5dd; --error: #c62828; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #111418; --card: #1b2027; --text: #e6e8eb; --muted: #98a2b3; --accent: #8ab4f8; --border: #344054; --error: #ef9a9a; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    main { max-width: 640px; margin: 40px auto; padding: 0 16px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    h1 { margin: 0 0 4px; font-size: 1.5rem; }
+    p.sub { margin: 0 0 20px; color: var(--muted); }
+    label { display: block; font-weight: 600; margin: 16px 0 6px; }
+    textarea, select, input { width: 100%; font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+    textarea { min-height: 140px; resize: vertical; }
+    .count { text-align: right; font-size: .85rem; color: var(--muted); margin-top: 4px; }
+    button { margin-top: 20px; width: 100%; padding: 12px; font: inherit; font-weight: 600; border: 0; border-radius: 8px; background: var(--accent); color: #fff; cursor: pointer; }
+    @media (prefers-color-scheme: dark) { button { color: #111418; } }
+    button:disabled { opacity: .6; cursor: wait; }
+    .error { color: var(--error); margin-top: 16px; }
+    .result { margin-top: 20px; display: none; }
+    audio { width: 100%; }
+    .result a { display: inline-block; margin-top: 8px; color: var(--accent); }
+  </style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>Gemini Text-to-Speech</h1>
+    <p class="sub">Taip teks, pilih suara, dan dengar hasilnya.</p>
+
+    <form id="form">
+      <label for="text">Teks</label>
+      <textarea id="text" maxlength="{{ max_chars }}" placeholder="Selamat pagi, apa khabar semua?" required></textarea>
+      <div class="count"><span id="count">0</span> / {{ max_chars }}</div>
+
+      <label for="voice">Suara</label>
+      <select id="voice">
+        {% for v in voices %}<option value="{{ v }}">{{ v }}</option>{% endfor %}
+      </select>
+
+      <label for="style">Gaya (pilihan)</label>
+      <input id="style" placeholder="cth. Sebut dengan nada ceria">
+
+      <button id="btn" type="submit">Jana Suara</button>
+    </form>
+
+    <div class="error" id="error"></div>
+    <div class="result" id="result">
+      <audio id="audio" controls></audio>
+      <a id="download" download="gemini-tts.wav">Muat turun WAV</a>
+    </div>
+  </div>
+</main>
+<script>
+  const $ = (id) => document.getElementById(id);
+  $("text").addEventListener("input", () => { $("count").textContent = $("text").value.length; });
+
+  $("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("error").textContent = "";
+    $("btn").disabled = true;
+    $("btn").textContent = "Sedang menjana…";
+    try {
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: $("text").value, voice: $("voice").value, style: $("style").value }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Ralat ${res.status}`);
+      }
+      const url = URL.createObjectURL(await res.blob());
+      $("audio").src = url;
+      $("download").href = url;
+      $("result").style.display = "block";
+      $("audio").play();
+    } catch (err) {
+      $("error").textContent = err.message;
+    } finally {
+      $("btn").disabled = false;
+      $("btn").textContent = "Jana Suara";
+    }
+  });
+</script>
+</body>
+</html>

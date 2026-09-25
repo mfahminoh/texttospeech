@@ -6,6 +6,7 @@ Guna:
 """
 
 import argparse
+import io
 import os
 import sys
 import wave
@@ -40,12 +41,20 @@ def text_to_speech(text: str, voice: str = "Kore", model: str = DEFAULT_MODEL) -
     return response.candidates[0].content.parts[0].inline_data.data
 
 
-def save_wav(path: str, pcm: bytes) -> None:
-    with wave.open(path, "wb") as wf:
+def pcm_to_wav(pcm: bytes) -> bytes:
+    """Bungkus data PCM mentah dengan header WAV."""
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as wf:
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(SAMPLE_WIDTH)
         wf.setframerate(SAMPLE_RATE)
         wf.writeframes(pcm)
+    return buf.getvalue()
+
+
+def save_wav(path: str, pcm: bytes) -> None:
+    with open(path, "wb") as f:
+        f.write(pcm_to_wav(pcm))
 
 
 def main() -> int:

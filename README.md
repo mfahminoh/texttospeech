@@ -13,10 +13,21 @@ Contoh ringkas untuk menukar teks kepada suara menggunakan Gemini API.
    ```bash
    export GEMINI_API_KEY="kunci-api-anda"
    ```
-4. Jalankan:
+4. Jalankan dari command line:
    ```bash
    python tts.py "Selamat pagi, apa khabar semua?" -o salam.wav -v Kore
    ```
+
+## Aplikasi web
+
+```bash
+python app.py
+```
+
+Buka http://127.0.0.1:5000 — taip teks, pilih suara, tekan **Jana Suara**,
+kemudian dengar atau muat turun fail WAV.
+
+## Tetapan
 
 Tukar model dengan `-m` atau pemboleh ubah `GEMINI_TTS_MODEL`
 (lalai: `gemini-2.5-flash-preview-tts`).
