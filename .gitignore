@@ -1,0 +1,5 @@
+output.wav
+*.wav
+.env
+__pycache__/
+.venv/
