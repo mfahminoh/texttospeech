@@ -3,3 +3,9 @@ output.wav
 .env
 __pycache__/
 .venv/
+
+# Review video: fail media besar tidak di-commit (batch.json & reviews.json di-commit)
+batches/*/videos/
+batches/*/frames/
+batches/*/previews/
+batches/demo/
